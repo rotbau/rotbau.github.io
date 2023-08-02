@@ -1,10 +1,8 @@
 ---
 layout: post
-title: You're up and running!
+title: Welcome Back
 ---
 
-Next you can update your site name, avatar and other options using the _config.yml file in the root of your repository (shown below).
+Getting back into the blogging game after being away for quite awhile.  Stay tuned for Kubernetes and Tanzu related content.
 
-![_config.yml]({{ site.baseurl }}/images/config.png)
-
-The easiest way to make your first post is to edit this one. Go into /_posts/ and update the Hello World markdown file. For more instructions head over to the [Jekyll Now repository](https://github.com/barryclark/jekyll-now) on GitHub.
+*Disclaimer: All post, contents and examples are for educational purposes only and does not constitute professional advice.  All information, contents, opinions are my own and do not reflect the opinions of my employer.  Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately*
