@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Welcome Back
+title: Back in the game
 ---
 
 Welcome!
