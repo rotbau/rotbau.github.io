@@ -4,12 +4,6 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+I'm a solutions engineer working for a large Silicon Valley software company.  I also Kubernetes nerd who still enjoys working with hardware and running my own lab at home.  
 
-### More Information
-
-A place to include any other types of information that you'd like to include about yourself.
-
-### Contact me
-
-[email@domain.com](mailto:email@domain.com)
+I'm a CKA and CKAD with roots in virtualization, networking and Cloud architecture.
