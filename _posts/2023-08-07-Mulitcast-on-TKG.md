@@ -299,5 +299,29 @@ antctl get podmulticaststats
 NAMESPACE NAME     INBOUND OUTBOUND
 default   mcsender 0       450370
 ```
+
+## Testing Pod-to-VM Multicast
+
+The Pod sender in the CNI should support multicast traffic from POD -> VM but in my case this was not working.  As I troubleshoot this with Antrea there is a workaround where you can use hostNetwork on the mcsender pod.  This puts the Pod on the host network and Pod will have an ip address same as the kubernetes node.  While this is not ideal from a security standpoint (requires priviledged escalation) it does work.  I will update this post once I sort out why it doesn't work with hostNetwork
+
+**mcsender pod with hostNetwork**
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: mcsender
+  name: mcsender
+  namespace: default
+spec:
+  containers:
+  - image: harbor.vtechk8s.com/demo/mcsender:v1
+    imagePullPolicy: IfNotPresent
+    name: mcsender
+  dnsPolicy: ClusterFirstWithHostNet #ClusterFirst or ClusterFirstWithHostNet
+  hostNetwork: true
+```
+
 Disclaimer: All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
 
