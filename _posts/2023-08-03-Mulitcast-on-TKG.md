@@ -19,9 +19,9 @@ I'm not going to dig into vSphere with Tanzu components, setup or configuration.
 
 ## Create the Antra Config in the vSphere Namespace where TKG cluster will be created
 
-1. Create a vSphere namespace.  I'm using the vsphere namespace `mcast` for this example
-2. Change to mcast context `kubectl config use-context mcast`
-3. Create a AntreaConfig object in the format of clustername-antrea-package in the vSphere namespace where cluster will be created.
+Create a vSphere namespace.  I'm using the vsphere namespace `mcast` for this example
+Change to mcast context `kubectl config use-context mcast`
+Create a AntreaConfig object in the format of clustername-antrea-package in the vSphere namespace where cluster will be created.
   - AntreaConfig required object name format `clustername-antrea-package`
   - AntreaConfig Example Yaml File with `Multicast: true` and `NetworkPolicyStats: true`
 ```cat <<EOF > mccluster-antrea-config.yaml
@@ -45,8 +45,8 @@ spec:
         Multicast: true
 EOF
 ```
-4. Create AntreaConfig `kubectl apply -f mccluster-antrea-config.yaml`
-5. Validate AntreaConfig was created in vSphere namespace mccast `kubectl get antreaconfig`
+Create AntreaConfig `kubectl apply -f mccluster-antrea-config.yaml`
+Validate AntreaConfig was created in vSphere namespace mccast `kubectl get antreaconfig`
 
 ## Create TKG Workload Cluster
 
@@ -104,17 +104,17 @@ spec:
                         secret: QiMgakjdfajoifa99fa0dxxxx.dkaafad
                 - identity: {}
 ```
-1. Create Cluster `kubectl apply -f mccluster-classy.yaml`
-2. Authenticate to workload cluster using appropriate `kubectl vsphere login` commands
-3. Change to workload cluster context `kubectl config use-context mccluster`
-4. Verify antrea-agent and antrea-controller pods are running
+Create Cluster `kubectl apply -f mccluster-classy.yaml`
+Authenticate to workload cluster using appropriate `kubectl vsphere login` commands
+Change to workload cluster context `kubectl config use-context mccluster`
+Verify antrea-agent and antrea-controller pods are running
 ```kubectl get po -n kube-system |grep antrea
 antrea-agent-7xg5t                                        2/2     Running   0          46h
 antrea-agent-f8m2d                                        2/2     Running   0          46h
 antrea-agent-xqxk5                                        2/2     Running   0          46h
 antrea-controller-689b7cdfc5-4p6r9                        1/1     Running   0          46h
 ```
-5. Describe the antrea-configmap and verify Multicast and NetworkPolicyStats feature gates are set to true
+ Describe the antrea-configmap and verify Multicast and NetworkPolicyStats feature gates are set to true
 ```
 kubectl describe cm antrea-config -n kube-system
 
@@ -142,7 +142,7 @@ featureGates:
   Multicast: true
 
 ```
-6. You can also exec into the antrea-agent and antrea-controller pods directly and use antctl to check status
+Exec into the antrea-agent and antrea-controller pods directly and use antctl to check status
 ```
 kubectl exec -ti antrea-agent-xqxk5 -n kube-system -- sh
 
@@ -208,7 +208,6 @@ Then build the docker images with approriate tags to your image registry and pus
 
 ### Create Pod Manifests
 
-1. Create Manifests for Sender Pod 
 ```
 cat <<EOF > mcsender.yaml
 apiVersion: v1
@@ -225,7 +224,7 @@ spec:
     name: mcsender
 EOF
 ```
-2. Create Manifest for Receiver Pod
+
 ```
 cat <<EOF > mcreceiver.yaml
 apiVersion: v1
@@ -252,18 +251,18 @@ kubectl apply -f mcreceiver.yaml
 
 The mcsender should already be sending traffic since the entrypoint of the container is running the iperf command.  To validate mutlticast traffic is working you can exec to the mcreceiver pod and manually run the iperf receiver commands to subscribe to the stream being sent by the mcsender.
 
-1. Exec to mcsender pod `kubectl exec -ti mcsender -- /bin/bash`
-2. Run the iperf command `iperf -s -u -B 239.255.12.43 -i 1`
-3. If mutlicast is working you should see something like this
+Exec to mcsender pod `kubectl exec -ti mcsender -- /bin/bash`
+Run the iperf command `iperf -s -u -B 239.255.12.43 -i 1`
+If mutlicast is working you should see something like this
 [mcreceiver pod]{../images/mcreceiver-pod.png}
 
-4. Check multicastgroups from K8s cli
+Check multicastgroups from K8s cli
 ```
 kubectl get multicastgroups
 GROUP           PODS
 239.255.12.43   default/mcreceiver
 ```
-5. Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
+Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
 
 **antrea-agent podmulticaststats for mcreceiver**
 ```
