@@ -3,11 +3,11 @@ layout: post
 title: Enabling Multicast on Tanzu TKGs with Antrea
 ---
 
-I recently worked with a customer on testing multicast patterns (Pod -> Pod and Pod -> VM) on Tanzu TKG with antrea.  Antrea is OSS Kubernetes CNI developed by VMware and is currently a CNCF sandbox project.  This use case was around Tanzu Kuberntes Grid Supervisor (TKGs) which is Kubernetes integrated into vSphere.
+I recently worked with a customer on testing multicast patterns (Pod -> Pod and Pod -> VM) on Tanzu TKGs with antrea.  Antrea is an OSS Kubernetes CNI developed by VMware and is currently a CNCF sandbox project.  The use case was around Tanzu Kuberntes Grid Supervisor (TKGs) which is Kubernetes integrated into vSphere.
 
-The Antrea CNI multicast support is Alpha, so the feature gate needs to be enabled to use it.  This is normally done via an antrea-config configmap object.  However TKGs supervisor controls these objects and setting the antrea-config cm directly will have the changes reverted by the supervisor.  As of vSphere 8.0 update 1c you can create an AntreaConfig object that allows you to modify the configuration of Antrea per TKG workload cluster.
+Antrea CNI multicast support is Alpha, so the feature gate needs to be enabled to use it.  This is normally done via an antrea-config configmap object.  However TKGs supervisor controls these objects and setting the antrea-config cm directly will result in the changes being reverted by the supervisor.  As of vSphere 8.0 update 1, you can create an AntreaConfig object that allows you to modify the configuration of Antrea per TKG workload cluster.
 
-I'm not going to dig into vSphere with Tanzu components, setup or configuration.  Please reference [VMware's official documentation](https://docs.vmware.com/en/VMware-vSphere/index.html) to learn all about vSphere with Tanzu.  Also note that Tanzu Kuberentes Grid with Standalone Management Cluster support directly editing the antrea-config configmap to change the Antrea configuration.  Refer to [Antrea upstream documents](https://antrea.io/docs/v1.12.1/docs/feature-gates/) for that.
+I'm not going to dig into vSphere with Tanzu components, setup or configuration.  Please reference [VMware's official documentation](https://docs.vmware.com/en/VMware-vSphere/index.html){:target="_blank"} to learn all about vSphere with Tanzu.  Also note that Tanzu Kuberentes Grid with Standalone Management Cluster support directly editing the antrea-config configmap to change the Antrea configuration.  Refer to [Antrea upstream documents](https://antrea.io/docs/v1.12.1/docs/feature-gates/){:target="_blank"} for that.
 
 ## Test Setup
 - vCenter 8.0u1c
@@ -24,7 +24,9 @@ Change to mcast context `kubectl config use-context mcast`
 Create a AntreaConfig object in the format of clustername-antrea-package in the vSphere namespace where cluster will be created.
   - AntreaConfig required object name format `clustername-antrea-package`
   - AntreaConfig Example Yaml File with `Multicast: true` and `NetworkPolicyStats: true`
-```cat <<EOF > mccluster-antrea-config.yaml
+
+```
+cat <<EOF > mccluster-antrea-config.yaml
 apiVersion: cni.tanzu.vmware.com/v1alpha1
 kind: AntreaConfig
 metadata:
@@ -54,8 +56,10 @@ Next steps is to create the TKG Workload cluster in the mcast vSphere Namespace 
 
 It is important to use the Ubuntu OS for the cluster instead of Photon.  When testing with Photon the antrea-agent pods went into crash loopback with an error 'failed to create multicast socket' so it appears there is currently an issue with Photon.
 
-Example Ubuntu v1.25 TKG Workload Cluster Manifest
-```apiVersion: cluster.x-k8s.io/v1beta1
+**Example Ubuntu v1.25 TKG Workload Cluster Manifest**
+
+```
+apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
   name: mccluster
@@ -104,17 +108,19 @@ spec:
                         secret: QiMgakjdfajoifa99fa0dxxxx.dkaafad
                 - identity: {}
 ```
-Create Cluster `kubectl apply -f mccluster-classy.yaml`
-Authenticate to workload cluster using appropriate `kubectl vsphere login` commands
-Change to workload cluster context `kubectl config use-context mccluster`
-Verify antrea-agent and antrea-controller pods are running
-```kubectl get po -n kube-system |grep antrea
+
+- Create Cluster `kubectl apply -f mccluster-classy.yaml`
+- Authenticate to workload cluster using appropriate `kubectl vsphere login` commands
+- Change to workload cluster context `kubectl config use-context mccluster`
+- Verify antrea-agent and antrea-controller pods are running
+```
+kubectl get po -n kube-system |grep antrea
 antrea-agent-7xg5t                                        2/2     Running   0          46h
 antrea-agent-f8m2d                                        2/2     Running   0          46h
 antrea-agent-xqxk5                                        2/2     Running   0          46h
 antrea-controller-689b7cdfc5-4p6r9                        1/1     Running   0          46h
 ```
- Describe the antrea-configmap and verify Multicast and NetworkPolicyStats feature gates are set to true
+- Describe the antrea-configmap and verify Multicast and NetworkPolicyStats feature gates are set to true
 ```
 kubectl describe cm antrea-config -n kube-system
 
@@ -142,7 +148,7 @@ featureGates:
   Multicast: true
 
 ```
-Exec into the antrea-agent and antrea-controller pods directly and use antctl to check status
+- Exec into the antrea-agent and antrea-controller pods directly and use antctl to check status
 ```
 kubectl exec -ti antrea-agent-xqxk5 -n kube-system -- sh
 
@@ -171,9 +177,8 @@ Multicast                Enabled        ALPHA
  I'm using simple iperf to test Mutlicast sending / receiver.  I put together a couple simple Dockefiles to acheive this
 
  ### Sender Dockerfile
- 
- ```
 
+ ```
  mkdir sender
  cd sender
  cat <<EOF > Dockerfile
@@ -186,8 +191,7 @@ RUN apt-get install -y iproute2
 RUN apt-get install -y iperf
 ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-t", "86400"]
 EOF
-
- ```
+```
 
 ### Receiver Dockerfile
 
@@ -206,7 +210,10 @@ RUN apt-get install -y iperf
 ENTRYPOINT ["/usr/bin/iperf", "-s", "-u", "-B", "239.255.12.43", "-i", "1"]
 EOF
 ```
-Then build the docker images with approriate tags to your image registry and push them
+- Build the docker images with approriate tags to your image registry and push them
+```
+docker build . -t registry/project/mcreceiver:v1
+```
 
 ## Testing Pod-to-Pod Multicast - Same Cluster
 
@@ -245,6 +252,7 @@ spec:
     name: mcreceiver
 EOF
 ```
+
 ### Deploy Pods
 ```
 kubectl apply -f mcsender.yaml
@@ -255,9 +263,9 @@ kubectl apply -f mcreceiver.yaml
 
 The mcsender should already be sending traffic since the entrypoint of the container is running the iperf command.  To validate mutlticast traffic is working you can exec to the mcreceiver pod and manually run the iperf receiver commands to subscribe to the stream being sent by the mcsender.
 
-Exec to mcsender pod `kubectl exec -ti mcsender -- /bin/bash`
-Run the iperf command `iperf -s -u -B 239.255.12.43 -i 1`
-If mutlicast is working you should see something like this
+- Exec to mcsender pod `kubectl exec -ti mcsender -- /bin/bash`
+- Run the iperf command `iperf -s -u -B 239.255.12.43 -i 1`
+- If mutlicast is working you should see something like this
 [mcreceiver pod]{../images/mcreceiver-pod.png}
 
 Check multicastgroups from K8s cli
@@ -266,7 +274,7 @@ kubectl get multicastgroups
 GROUP           PODS
 239.255.12.43   default/mcreceiver
 ```
-Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
+- Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
 
 **antrea-agent podmulticaststats for mcreceiver**
 ```
