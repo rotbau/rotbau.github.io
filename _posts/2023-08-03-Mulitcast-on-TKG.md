@@ -219,6 +219,7 @@ docker build . -t registry/project/mcreceiver:v1
 
 ### Create Pod Manifests
 
+- sender
 ```
 cat <<EOF > mcsender.yaml
 apiVersion: v1
@@ -236,6 +237,7 @@ spec:
 EOF
 ```
 
+- receiver
 ```
 cat <<EOF > mcreceiver.yaml
 apiVersion: v1
@@ -297,3 +299,5 @@ antctl get podmulticaststats
 NAMESPACE NAME     INBOUND OUTBOUND
 default   mcsender 0       450370
 ```
+
+
