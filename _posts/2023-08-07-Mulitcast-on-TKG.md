@@ -316,7 +316,7 @@ metadata:
   namespace: default
 spec:
   containers:
-  - image: harbor.vtechk8s.com/demo/mcsender:v1
+  - image: mcsender:v1
     imagePullPolicy: IfNotPresent
     name: mcsender
   dnsPolicy: ClusterFirstWithHostNet #ClusterFirst or ClusterFirstWithHostNet
