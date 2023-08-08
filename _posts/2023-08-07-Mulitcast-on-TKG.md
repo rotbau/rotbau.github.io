@@ -189,7 +189,7 @@ RUN apt-get install -y iputils-ping
 RUN apt-get install -y iputils-tracepath
 RUN apt-get install -y iproute2
 RUN apt-get install -y iperf
-ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-t", "86400"]
+ENTRYPOINT ["/usr/bin/iperf", "-s", "-u", "-B", "239.255.12.43", "-i", "1"]
 EOF
 ```
 
@@ -207,7 +207,7 @@ RUN apt-get install -y iputils-tracepath
 RUN apt-get install -y iproute2
 RUN apt-get install -y screen
 RUN apt-get install -y iperf
-ENTRYPOINT ["/usr/bin/iperf", "-s", "-u", "-B", "239.255.12.43", "-i", "1"]
+ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-t", "86400"]
 EOF
 ```
 - Build the docker images with approriate tags to your image registry and push them
@@ -219,7 +219,7 @@ docker build . -t registry/project/mcreceiver:v1
 
 ### Create Pod Manifests
 
-- sender
+- Sender Pod
 ```
 cat <<EOF > mcsender.yaml
 apiVersion: v1
@@ -237,7 +237,7 @@ spec:
 EOF
 ```
 
-- receiver
+- Receiver Pod
 ```
 cat <<EOF > mcreceiver.yaml
 apiVersion: v1
@@ -265,10 +265,27 @@ kubectl apply -f mcreceiver.yaml
 
 The mcsender should already be sending traffic since the entrypoint of the container is running the iperf command.  To validate mutlticast traffic is working you can exec to the mcreceiver pod and manually run the iperf receiver commands to subscribe to the stream being sent by the mcsender.
 
-- Exec to mcsender pod `kubectl exec -ti mcsender -- /bin/bash`
-- Run the iperf command `iperf -s -u -B 239.255.12.43 -i 1`
+Start Sender manually
+- Exec to mcsender pod 
+```
+kubectl exec -ti mcsender -- /bin/bash
+```
+- Run the iperf server command to send multicast stream
+```
+iperf -s -u -B 239.255.12.43 -i 1
+```
+
+Start Receiver manually
+- Exec to mcreceiver pod
+```
+kubectl exec -ti mcreceiver -- /bin/bash
+```
+- Run iperf client command to subscrib to multicast stream
+```
+iperf  -c 239.255.12.43 -u -t 86400
+```
 - If mutlicast is working you should see something like this
-[mcreceiver pod]{../images/mcreceiver-pod.png}
+[mcreceiver pod](/images/mcreceiver-pod.png)
 
 Check multicastgroups from K8s cli
 ```
