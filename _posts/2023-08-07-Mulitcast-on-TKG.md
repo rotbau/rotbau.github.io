@@ -189,7 +189,7 @@ RUN apt-get install -y iputils-ping
 RUN apt-get install -y iputils-tracepath
 RUN apt-get install -y iproute2
 RUN apt-get install -y iperf
-ENTRYPOINT ["/usr/bin/iperf", "-s", "-u", "-B", "239.255.12.43", "-i", "1"]
+ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-t", "86400"]
 EOF
 ```
 
@@ -207,7 +207,7 @@ RUN apt-get install -y iputils-tracepath
 RUN apt-get install -y iproute2
 RUN apt-get install -y screen
 RUN apt-get install -y iperf
-ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-t", "86400"]
+ENTRYPOINT ["/usr/bin/iperf", "-s", "-u", "-B", "239.255.12.43", "-i", "1"]
 EOF
 ```
 - Build the docker images with approriate tags to your image registry and push them
@@ -270,9 +270,9 @@ Start Sender manually
 ```
 kubectl exec -ti mcsender -- /bin/bash
 ```
-- Run the iperf server command to send multicast stream
+- On the sender pod run
 ```
-iperf -s -u -B 239.255.12.43 -i 1
+iperf  -c 239.255.12.43 -u -t 86400
 ```
 
 Start Receiver manually
@@ -280,12 +280,12 @@ Start Receiver manually
 ```
 kubectl exec -ti mcreceiver -- /bin/bash
 ```
-- Run iperf client command to subscrib to multicast stream
+- On receiver pod run
 ```
-iperf  -c 239.255.12.43 -u -t 86400
+iperf -s -u -B 239.255.12.43 -i 1
 ```
 - If mutlicast is working you should see something like this
-[mcreceiver pod](/images/mcreceiver-pod.png)
+![mcreceiver pod](../images/mcreceiver-pod.png)
 
 Check multicastgroups from K8s cli
 ```
