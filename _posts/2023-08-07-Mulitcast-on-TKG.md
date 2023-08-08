@@ -293,9 +293,11 @@ kubectl get multicastgroups
 GROUP           PODS
 239.255.12.43   default/mcreceiver
 ```
+*Check podmulticaststats on antrea-agents*
+
 - Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
 
-**antrea-agent podmulticaststats for mcreceiver**
+*antrea-agent podmulticaststats for mcreceiver*
 ```
 kubectl exec -ti antrea-agent-7xg5t -n kube-system -- sh
 
@@ -307,7 +309,7 @@ kube-system          metrics-server-588ff6d9b4-tlwpm       0       0
 secretgen-controller secretgen-controller-75d88bc999-m7zkh 0       0
 ```
 
-**atrea-agent podmulticaststats for mcsender**
+*antrea-agent podmulticaststats for mcsender*
 ```
 kubectl exec -ti antrea-agent-xqxk5 -n kube-system -- sh
 
@@ -316,6 +318,13 @@ antctl get podmulticaststats
 NAMESPACE NAME     INBOUND OUTBOUND
 default   mcsender 0       450370
 ```
+**Checking mulicast from VM or K8s node**
+
+- ssh to VM or K8s node
+```
+ip mroute
+```
+
 
 ## Testing Pod-to-VM Multicast
 
@@ -339,6 +348,14 @@ spec:
   dnsPolicy: ClusterFirstWithHostNet #ClusterFirst or ClusterFirstWithHostNet
   hostNetwork: true
 ```
+Notice the IP of the mcsender pod now matches the IP on the K8s node its running on while the receiver has an IP from the CNI
 
-Disclaimer: All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
+```
+kubectl get po -owide
+NAME         READY   STATUS    RESTARTS   AGE   IP
+mcreceiver   1/1     Running   0          71m   192.0.1.4  
+mcsender     1/1     Running   0          38m   10.0.102.13
+```
+
+**Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
 
