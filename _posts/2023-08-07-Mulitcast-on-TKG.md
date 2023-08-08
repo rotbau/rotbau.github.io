@@ -7,7 +7,7 @@ I recently worked with a customer on testing multicast patterns (Pod -> Pod and 
 
 Antrea CNI multicast support is Alpha, so the feature gate needs to be enabled to use it.  This is normally done via an antrea-config configmap object.  However TKGs supervisor controls these objects and setting the antrea-config cm directly will result in the changes being reverted by the supervisor.  As of vSphere 8.0 update 1, you can create an AntreaConfig object that allows you to modify the configuration of Antrea per TKG workload cluster.
 
-I'm not going to dig into vSphere with Tanzu components, setup or configuration.  Please reference [VMware's official documentation](https://docs.vmware.com/en/VMware-vSphere/index.html){:target="_blank"} to learn all about vSphere with Tanzu.  Also note that Tanzu Kuberentes Grid with Standalone Management Cluster support directly editing the antrea-config configmap to change the Antrea configuration.  Refer to [Antrea upstream documents](https://antrea.io/docs/v1.12.1/docs/feature-gates/){:target="_blank"} for that.
+I'm not going to dig into vSphere with Tanzu components, setup or configuration.  Please reference [VMware's official documentation](https://docs.vmware.com/en/VMware-vSphere/index.html) to learn all about vSphere with Tanzu.  Also note that Tanzu Kuberentes Grid with Standalone Management Cluster support directly editing the antrea-config configmap to change the Antrea configuration.  Refer to [Antrea upstream documents](https://antrea.io/docs/v1.12.1/docs/feature-gates/) for that.
 
 ## Test Setup
 - vCenter 8.0u1c
@@ -219,7 +219,7 @@ docker build . -t registry/project/mcreceiver:v1
 
 ### Create Pod Manifests
 
-- Sender Pod
+**Sender Pod**
 ```
 cat <<EOF > mcsender.yaml
 apiVersion: v1
@@ -237,7 +237,7 @@ spec:
 EOF
 ```
 
-- Receiver Pod
+**Receiver Pod**
 ```
 cat <<EOF > mcreceiver.yaml
 apiVersion: v1
@@ -265,7 +265,7 @@ kubectl apply -f mcreceiver.yaml
 
 The mcsender should already be sending traffic since the entrypoint of the container is running the iperf command.  To validate mutlticast traffic is working you can exec to the mcreceiver pod and manually run the iperf receiver commands to subscribe to the stream being sent by the mcsender.
 
-Start Sender manually
+**Start Sender manually**
 - Exec to mcsender pod 
 ```
 kubectl exec -ti mcsender -- /bin/bash
@@ -275,7 +275,7 @@ kubectl exec -ti mcsender -- /bin/bash
 iperf  -c 239.255.12.43 -u -t 86400
 ```
 
-Start Receiver manually
+**Start Receiver manually**
 - Exec to mcreceiver pod
 ```
 kubectl exec -ti mcreceiver -- /bin/bash
@@ -287,7 +287,7 @@ iperf -s -u -B 239.255.12.43 -i 1
 - If mutlicast is working you should see something like this
 ![mcreceiver pod](../images/mcreceiver-pod.png)
 
-Check multicastgroups from K8s cli
+**Check multicastgroups from K8s cli**
 ```
 kubectl get multicastgroups
 GROUP           PODS
