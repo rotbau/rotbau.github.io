@@ -330,7 +330,7 @@ ip mroute
 
 I initially had problems getting Pod -> VM multicast working without using hostNetwork for the sender pod.  Talking with some of the Antrea engineers they said it should work with the CNI network and I should not need hostNetwork.  After some checking they determined my traffic was timing out before it got to the VM and I needed to adjust my iperf command on the sender to use -T 32.  Once I made this change it worked as expected.
 
-They VM I'm testing with is on the same subnet as my K8s cluster.  To route multicast across vlans you may need additional configuration on the physical network to set up PIM and other multicast forwarding configurations.  That's out of the scope of this document (mainly because my home lab gear doesn't support this).  I may test in my nested environments to see if I can get it working.
+The VM I'm testing is on the same subnet as my K8s cluster.  To route multicast across vlans you may need additional configuration on the physical network to set up PIM and other multicast forwarding configurations.  That's out of the scope of this document (mainly because my home lab gear doesn't support this).  I may test in my nested environments to see if I can get it working.
 
 To test just use any VM with iperf installed and run the same iperf command as you do on the receiver pod
 ```
