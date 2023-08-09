@@ -146,7 +146,6 @@ featureGates:
   Egress: true
   AntreaIPAM: false
   Multicast: true
-
 ```
 - Exec into the antrea-agent and antrea-controller pods directly and use antctl to check status
 ```
@@ -170,18 +169,17 @@ EndpointSlice            Disabled       ALPHA
 FlowExporter             Enabled        ALPHA
 NetworkPolicyStats       Enabled        BETA
 Multicast                Enabled        ALPHA
-
- ```
+```
  ## Create Containers to test Mutlicast
 
  I'm using simple iperf to test Mutlicast sending / receiver.  I put together a couple simple Dockefiles to acheive this
 
  ### Sender Dockerfile
 
- ```
- mkdir sender
- cd sender
- cat <<EOF > Dockerfile
+```
+mkdir sender
+cd sender
+cat <<EOF > Dockerfile
 FROM ubuntu
 RUN apt-get update
 RUN apt-get install -y tcpdump
@@ -189,7 +187,7 @@ RUN apt-get install -y iputils-ping
 RUN apt-get install -y iputils-tracepath
 RUN apt-get install -y iproute2
 RUN apt-get install -y iperf
-ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-t", "86400"]
+ENTRYPOINT ["/usr/bin/iperf", "-c", "239.255.12.43", "-u", "-T", "32", "-t", "86400"]
 EOF
 ```
 
@@ -272,7 +270,7 @@ kubectl exec -ti mcsender -- /bin/bash
 ```
 - On the sender pod run
 ```
-iperf  -c 239.255.12.43 -u -t 86400
+iperf -c 239.255.12.43 -u -T 32 -t 86400
 ```
 
 **Start Receiver manually**
@@ -293,7 +291,7 @@ kubectl get multicastgroups
 GROUP           PODS
 239.255.12.43   default/mcreceiver
 ```
-*Check podmulticaststats on antrea-agents*
+**Check podmulticaststats on antrea-agent pods**
 
 - Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
 
@@ -323,39 +321,24 @@ default   mcsender 0       450370
 - ssh to VM or K8s node
 ```
 ip mroute
+
+(192.0.1.5,239.255.12.43)   Iif: antrea-gw0 Oifs: eth0  State: resolved
 ```
 
 
 ## Testing Pod-to-VM Multicast
 
-The Pod sender in the CNI should support multicast traffic from POD -> VM but in my case this was not working.  As I troubleshoot this with Antrea there is a workaround where you can use hostNetwork on the mcsender pod.  This puts the Pod on the host network and Pod will have an ip address same as the kubernetes node.  While this is not ideal from a security standpoint (requires priviledged escalation) it does work.  I will update this post once I sort out why it doesn't work with hostNetwork
+I initially had problems getting Pod -> VM multicast working without using hostNetwork for the sender pod.  Talking with some of the Antrea engineers they said it should work with the CNI network and I should not need hostNetwork.  After some checking they determined my traffic was timing out before it got to the VM and I needed to adjust my iperf command on the sender to use -T 32.  Once I made this change it worked as expected.
 
-**mcsender pod with hostNetwork**
+They VM I'm testing with is on the same subnet as my K8s cluster.  To route multicast across vlans you may need additional configuration on the physical network to set up PIM and other multicast forwarding configurations.  That's out of the scope of this document (mainly because my home lab gear doesn't support this).  I may test in my nested environments to see if I can get it working.
 
+To test just use any VM with iperf installed and run the same iperf command as you do on the receiver pod
 ```
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    run: mcsender
-  name: mcsender
-  namespace: default
-spec:
-  containers:
-  - image: mcsender:v1
-    imagePullPolicy: IfNotPresent
-    name: mcsender
-  dnsPolicy: ClusterFirstWithHostNet #ClusterFirst or ClusterFirstWithHostNet
-  hostNetwork: true
+iperf -s -u -B 239.255.12.43 -i 1
 ```
-Notice the IP of the mcsender pod now matches the IP on the K8s node its running on while the receiver has an IP from the CNI
+If multicast is working should see something like this
+![mcreceiver vm](../images/mcreceiver-vm.png)
 
-```
-kubectl get po -owide
-NAME         READY   STATUS    RESTARTS   AGE   IP
-mcreceiver   1/1     Running   0          71m   192.0.1.4  
-mcsender     1/1     Running   0          38m   10.0.102.13
-```
 
 **Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
 
