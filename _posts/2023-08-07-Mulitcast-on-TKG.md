@@ -3,7 +3,7 @@ layout: post
 title: Enabling Multicast on Tanzu TKGs with Antrea
 description:
 tags:
-- vsphere tanzu
+- tanzu
 - kubernetes
 - networking
 ---
