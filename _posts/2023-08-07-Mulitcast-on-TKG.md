@@ -8,7 +8,7 @@ tags:
 - networking
 ---
 
-I recently worked with a customer on testing multicast patterns (Pod -> Pod and Pod -> VM) on Tanzu TKGs with antrea.  Antrea is an OSS Kubernetes CNI developed by VMware and is currently a CNCF sandbox project.  The use case was around Tanzu Kuberntes Grid Supervisor (TKGs) which is Kubernetes integrated into vSphere.
+I recently worked with a customer on testing multicast patterns (Pod -> Pod and Pod -> VM) on vSphere Tanzu TKGs with antrea.  Antrea is an OSS Kubernetes CNI developed by VMware and is currently a CNCF sandbox project.  The use case was around Tanzu Kuberntes Grid Supervisor (TKGs) which is Kubernetes integrated into vSphere.
 
 Antrea CNI multicast support is Alpha, so the feature gate needs to be enabled to use it.  This is normally done via an antrea-config configmap object.  However TKGs supervisor controls these objects and setting the antrea-config cm directly will result in the changes being reverted by the supervisor.  As of vSphere 8.0 update 1, you can create an AntreaConfig object that allows you to modify the configuration of Antrea per TKG workload cluster.
 
