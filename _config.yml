@@ -21,7 +21,7 @@ author:
 # Flags below are optional
 #
 
-theme: slate
+theme: jekyll-theme-slate
 
 # Includes an icon in the footer for each username you enter
 footer-links:
