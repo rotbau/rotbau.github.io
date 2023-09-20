@@ -1,6 +1,11 @@
 ---
 layout: post
 title: Enabling Multicast on Tanzu TKGs with Antrea
+description:
+tags:
+- vsphere tanzu
+- kubernetes
+- networking
 ---
 
 I recently worked with a customer on testing multicast patterns (Pod -> Pod and Pod -> VM) on Tanzu TKGs with antrea.  Antrea is an OSS Kubernetes CNI developed by VMware and is currently a CNCF sandbox project.  The use case was around Tanzu Kuberntes Grid Supervisor (TKGs) which is Kubernetes integrated into vSphere.
