@@ -22,7 +22,7 @@ author:
 #
 
 #theme: jekyll-theme-slate
-remote-theme: jekyll-theme-slate
+remote_theme: pages-themes/slate@v0.2.0
 
 # Includes an icon in the footer for each username you enter
 footer-links:
@@ -82,9 +82,9 @@ sass:
 
 # Use the following plug-ins
 plugins:
-  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
-  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
-  - jekyll-remote-theme
+- jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
+- jekyll-feed # Create an Atom feed using the official Jekyll feed gem
+- jekyll-remote-theme
 
 # Exclude these files from your production _site
 exclude:
