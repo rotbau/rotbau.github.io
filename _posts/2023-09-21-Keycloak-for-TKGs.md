@@ -149,12 +149,23 @@ bin/kc.[sh|bat] start
 1. Create Realm -> Pull Down on master realm and click *Create Realm*
 - Realm name: *tmcsm*
 - Make sure enabled slider is on
-2. View Realm by selecting Realm settings in left menu. You should not need to change any settings
-[pic]
+2. View Realm by selecting Realm settings in left menu. You should not need to change any other settings
+![tmcsm realm](../images/realm.jpg)
 
 ### Create tmcsm client
 
-1. 
-
+1. Create tmcsm client -> Clients -> Create client
+- Client Type: OpenID Connect
+- Client ID: tmcsm
+- Name: none 
+- -> Next
+- Client authentication slider: ON
+- Client authorization slider: ON
+- Authentication flow: no changes needed
+- -> Next
+- Home URL: https://pinniped-supervisor.tmc.example.com/provider/pinniped/callback
+- Valid redirct URL: https://pinniped-supervisor.tmc.example.com/provider/pinniped/callback
+- -> Save
+![tmcsm client](../images/client.jpg)
 
 **Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
