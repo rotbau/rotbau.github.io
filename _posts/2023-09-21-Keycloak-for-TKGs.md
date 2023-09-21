@@ -127,3 +127,5 @@ sudo systemctl enable keycloak
 sudo systemctl start keycloak
 sudo systemctl status keycloak
 ```
+
+**Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
