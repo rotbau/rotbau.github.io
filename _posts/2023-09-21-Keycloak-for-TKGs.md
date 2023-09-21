@@ -8,9 +8,9 @@ tags:
 - tkgs
 ---
 
-Several of the VMware Tanzu products leverage Pinniped for OIDC authentication into TKG clusters and now Tanzu Mission Control Self Managed.  Pinniped can work with a number of OIDC providers like Okta, Ping, Worksapce One and Keycloak.  For lab or isolated environments, Keycloak is an ideal solution.
+Several of the VMware Tanzu products leverage Pinniped for OIDC authentication. Tanzu Kubernetes Grid, Tanzu Mission Control Self-Managed and Tanzu Application Platform to name a few can all leverage Pinniped for OIDC authentication.  Pinniped can work with a number of OIDC providers like Okta, Ping, Worksapce One and Keycloak.  For lab or isolated environments, Keycloak is an ideal solution.
 
-This blog covers a quick and dirty install of Keycloak on Linux and configuration for Tanzu Mission Control Local and Tanzu Kubernetes Grid Clusters.  Thanks to Navneet for helping with basic install and Keycloak Client configuration.
+This blog covers a quick and dirty install of Keycloak on Linux and configuration for Tanzu Mission Control Local and Tanzu Kubernetes Grid Clusters.  You can also install Keycloak on docker if you prefer.  Setup with be different but the client config for TKG and TMC should be the same.  Thanks to Navneet for helping with basic install and Keycloak Client configuration.
 
 ## Pre-Requisites
 
@@ -127,5 +127,21 @@ sudo systemctl enable keycloak
 sudo systemctl start keycloak
 sudo systemctl status keycloak
 ```
+
+### Initial Login
+
+Best way to set the initial admin user and password IMHO is to have a GUI available on the machine Keycloak was installed on.  Then you can just use a browser to visit http://localhost:8443 and set the credentials.
+
+You can also set environmental variables for the admin user and password and then run the /opt/keycloak/bin/kc.bat start 
+```
+export KEYCLOAK_ADMIN=<username>
+export KEYCLOAK_ADMIN_PASSWORD=<password>
+
+bin/kc.[sh|bat] start
+```
+
+## Configuring Realm, Client, Users and Groups for TMC Self-Managed
+
+
 
 **Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
