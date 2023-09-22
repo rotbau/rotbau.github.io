@@ -65,4 +65,8 @@ kubectl get cluster {clustername} -oyaml |grep -i -A 5 additionaltrustedcas
 verify harbor-ca is present
 ```
 
+**NOTE:  If you delete the cluster, the {cluster}-tmcsm-user-trusted-ca-secret will also be deleted.  So you need to recreate the secret before you recreate the cluster**
+
 You should now be able to successfully pull images from your private registry to TKGs workload cluster.  Note today there is NO easy way to allow the supervisor cluster to also trust a private certificate.  It can be done manually but SSH'ing to SC nodes and putting the certificate there but this is not supported.
+
+**Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately

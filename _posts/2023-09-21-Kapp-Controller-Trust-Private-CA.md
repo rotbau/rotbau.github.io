@@ -163,4 +163,6 @@ kubectl apply -f kapp-controller-secret.yaml
 kubectl get secrets -n tkg-system
 ```
 
+**Important Note:  If you delete the cluster the custom KappControllerConfig will also be deleted so you will need to recreate before recreating the cluster.  There will still be a KappControllerConfig in the namespace but it will be the default one**
+
 **Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately
