@@ -8,7 +8,7 @@ tags:
 - tkgs
 ---
 
-Many organizations will use their private CA to sign certificates for various applications including their image registry.  And unless you tell docker or containerd or kapp to trust the certificate bad things happen.  Anyone who has ever run up against the dreaded "X. 509 Certificate Signed by Unknown Authority" when trying to do a docker pull or seeing your pod images stuck in imagePullBackOff we know exactly what I'm talking about.
+Many organizations will use their private CA to sign certificates for various applications including their image registry.  And unless you tell docker or containerd or kapp to trust the certificate bad things happen.  Anyone who has ever run up against the dreaded "X. 509 Certificate Signed by Unknown Authority" when trying to do a docker pull or seeing your pod images stuck in imagePullBackOff will know exactly what I'm talking about.
 
 Tanzu Kubernetes Grid (vSphere with Tanzu, TKGs) on vSphere 8 now uses class based clusters versus the old Tanzu Kubernetes Cluster. The method to add an additionalCA trust is not well documented for cluster class TKG clusters.  The basic premise is you create a secret in the vSphere namespace the cluster will be created in, and then add that secret to the cluster manifest and create the cluster.
 
@@ -18,7 +18,12 @@ This is example is for adding a CA for a registry but could be any CA you need t
 
 1. Secret created needs to named {clustername-user-trusted-ca-secret} in the vSphere namespace where the cluster will be created
 2. Obtain the ca.crt that Registry was signed by
-3. Create Manifest for trusted-ca-secret
+3. Double base64 encode the certficate (yeah you read that right)
+```
+cat ca.crt |base64 > ca-b64.txt
+cat ca-b64.txt |base64 > ca-doubleb64.tx
+```
+3. Create Manifest for trusted-ca-secret and add the name of the certificate (harbor-ca) and the double base64 encoded ca.crt.  The name can be anything but needs to match what you put in the cluster manifest trust section.
 ```
 cat > clustername-user-trusted-ca-secret.yaml <<-EOF
 apiVersion: v1
@@ -59,3 +64,5 @@ vsphere namesspace context
 kubectl get cluster {clustername} -oyaml |grep -i -A 5 additionaltrustedcas
 verify harbor-ca is present
 ```
+
+You should now be able to successfully pull images from your private registry to TKGs workload cluster.  Note today there is NO easy way to allow the supervisor cluster to also trust a private certificate.  It can be done manually but SSH'ing to SC nodes and putting the certificate there but this is not supported.
