@@ -8,7 +8,7 @@ tags:
 - tkgs
 ---
 
-In a [previous post](2023-09-22-Keycloak-Client-TMC.md) I detailed an quick install of Keycloak on a Linux VM. Several of the Tanzu products (TAP, Tanzu Mission Control Self-Managed, and Tanzu Kubernetes Grid) use Pinniped for OIDC authentication.  Keycloak is an idea product for providing the OIDC authentication.  In the post I detail how to configure a Keycloak realm and client that can be used for Tanzu Mission Control Self-Managed.
+In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak on a Linux VM. Several of the Tanzu products (TAP, Tanzu Mission Control Self-Managed, and Tanzu Kubernetes Grid) use Pinniped for OIDC authentication.  Keycloak is an idea product for providing the OIDC authentication.  In the post I detail how to configure a Keycloak realm and client that can be used for Tanzu Mission Control Self-Managed.
 
 
 ## Configuring Realm, Client, Users and Groups for TMC Self-Managed
