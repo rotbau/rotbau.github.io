@@ -17,7 +17,7 @@ This blog covers a quick and dirty install of Keycloak on Linux You can also ins
 1. I used Ubuntu 22.04 because it supports openjdk-1.19-jdk which appears to be required by the lated 22.0.1 version of Keycloak.
 2. Install openjdk and create keycloak group
 ```
-sudo apt isntall openjdk-19-jdk
+sudo apt install openjdk-19-jdk
 java --version
 sudo groupadd keycloak
 sudo useradd -r -g keycloak -d /opt/keycloak -s /sbin/nologin keycloak
