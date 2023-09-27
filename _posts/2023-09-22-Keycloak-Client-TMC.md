@@ -68,7 +68,7 @@ In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak o
 ### Add group Client Scope to tmcsm Client
 
 1. Add group Client Scope to tmscm Client: Clients -> tmcsm -> Client scopes tab -> Add client scope
-- group should show as option
+- type group in search and hit enter -> should show groups as option
 - Select group and Add -> Default
 
 ![client add group scope](../images/client-add-scope.png)
@@ -98,6 +98,10 @@ Tanzu Self-Managed v1.0.1 requires hard-coded groups tmc:admin and tmc:memeber i
 - Email Verified Slide: Yes - Avoids need to validate email
 - First / Last Name: Can be left blank or completed
 - Create
+2. Add Password: On Complete User -> Credentials Tab
+- Set Password
+- Turn Temporary slider off if you don't was user to have to reset password at login
+- Save
 
 ### Add Group, Group Member(s) and Role Mapping
 
