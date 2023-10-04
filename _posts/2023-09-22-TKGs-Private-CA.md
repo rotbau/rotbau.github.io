@@ -18,7 +18,7 @@ This is example is for adding a CA for a registry but could be any CA you need t
 
 1. Secret created needs to named {clustername-user-trusted-ca-secret} in the vSphere namespace where the cluster will be created
 2. Obtain the ca.crt that Registry was signed by
-3. Double base64 encode the certficate (yeah you read that right)
+3. Double base64 encode the certficate (yeah you read that right). If the CA has intermediate and root have them all in the same file and then double base 64 that.
 ```
 cat ca.crt |base64 > ca-b64.txt
 cat ca-b64.txt |base64 > ca-doubleb64.tx
