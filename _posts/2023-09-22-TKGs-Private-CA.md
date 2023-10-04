@@ -23,7 +23,8 @@ This is example is for adding a CA for a registry but could be any CA you need t
 cat ca.crt |base64 > ca-b64.txt
 cat ca-b64.txt |base64 > ca-doubleb64.tx
 ```
-3. Create Manifest for trusted-ca-secret and add the name of the certificate (harbor-ca) and the double base64 encoded ca.crt.  The name can be anything but needs to match what you put in the cluster manifest trust section.
+4. Repeat for any other CAs you need to add (example below adds harbor-ca:, ca-1:, ca-2)
+5. Create Manifest for trusted-ca-secret and add the name of the certificate (harbor-ca) and the double base64 encoded ca.crt.  The name can be anything but needs to match what you put in the cluster manifest trust section.
 ```
 cat > clustername-user-trusted-ca-secret.yaml <<-EOF
 apiVersion: v1
@@ -33,10 +34,14 @@ metadata:
   namespace: {vsphere-namespace}
 data:
   harbor-ca: TFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVWnhSRU5EUVRWRFowRjNTVUpCWjBsQ1FVUkJUa0puYTNGb2EybEhPWGN3UWtGUk1FWkJSRUpzVFZGemQwTlJXVVJXVVZGSFJYZEtWbFY2UlZNS1RVSkJSMEV4VlVWRFFYZEtWRmRzZFdKdFZucGlNMUpvVFZKUmQwVm5XVVJXVVZGSVJFRjBUbUZYTlhWYVYwWjNZako0Y0dONlJWWk5RazFIUVRGVlJRcERaM2............
+  ca-1:
+  TCARMdkeiADMMEKdkeSlCRFJWSlVTVVpKUTBGVVJTMHDNMESSEdceD...............
+  ca-2:
+  TDFWdcaeEGEUNEDvdFEFdddVGlCRFJWSlVTVVpKUTBGVVJDFDEGEdc..............
 type: Opaque
 EOF
 ```
-4. Apply trusted ca manifest in vsphere namespace context
+6. Apply trusted ca manifest in vsphere namespace context
 ```
 kubectl apply -f clustername-user-trusted-ca-secret.yaml
 ```
@@ -54,8 +59,10 @@ kubectl apply -f clustername-user-trusted-ca-secret.yaml
         value: vsan-default-storage-policy
       - name: trust
         value:
-          additionalTrustedCAs:
-          - name: harbor-ca   ### name needs to match the name in the secret data section
+          additionalTrustedCAs:  #array so you can add many name/value pairs
+          - name: harbor-ca   # name needs to match the name in the secret data section
+          - name: ca-1
+          - name: ca-2
 ```
 2. Create the cluster
 3. Optional: Verify the cluster has the certificate
