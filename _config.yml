@@ -22,8 +22,8 @@ author:
 #
 
 #theme: jekyll-theme-slate
-#remote_theme: pages-themes/slate@v0.2.0
-remote_theme: pages-themes/minimal@v0.2.0
+remote_theme: pages-themes/slate@v0.2.0
+#remote_theme: pages-themes/minimal@v0.2.0
 
 # Includes an icon in the footer for each username you enter
 footer-links:
