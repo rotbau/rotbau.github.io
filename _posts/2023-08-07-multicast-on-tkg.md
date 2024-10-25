@@ -338,7 +338,7 @@ To test just use any VM with iperf installed and run the same iperf command as y
 iperf -s -u -B 239.255.12.43 -i 1
 ```
 If multicast is working should see something like this
-![mcreceiver vm](../images/mcreceiver-vm.png)
+![mcreceiver vm](../assets/mcreceiver-vm.png)
 
 
 **Disclaimer:** All posts, contents and examples are for educational purposes only and does not constitute professional advice. No warranty and user excepts All information, contents, opinions are my own and do not reflect the opinions of my employer. Most likely you shouldn’t listen to what I’m saying and should close this browser window immediately

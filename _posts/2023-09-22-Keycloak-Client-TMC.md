@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: archive
 title: Configuring Keycloak Client for Tanzu Mission Control Self-Managed
 categories: [kubernetes,tkgs,tanzu]
 ---
@@ -18,11 +18,11 @@ In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak o
 - Make sure enabled slider is on
 2. View Realm by selecting Realm settings in left menu. You should not need to change any other settings
 
-![tmcsm realm](../images/realm.jpg)
+![tmcsm realm](../assets/realm.jpg)
 
 **Note: All of the following steps are done under the tmcsm realm**
 
-![tmcsm realm](../images/tmc-realm.png)
+![tmcsm realm](../assets/tmc-realm.png)
 
 ### Create tmcsm client
 
@@ -39,7 +39,7 @@ In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak o
 - Valid redirct URL: https://pinniped-supervisor.tmc.example.com/provider/pinniped/callback
 - Save
 
-![tmcsm client](../images/client.jpg)
+![tmcsm client](../assets/client.jpg)
 
 ### Create group Client Scope
 
@@ -50,7 +50,7 @@ In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak o
 - Leave remaining settings unchanged
 - Save
 
-![client scope](../images/client-scope-detail.jpg)
+![client scope](../assets/client-scope-detail.jpg)
 
 2. Add Mapper for group Client scope: While viewing group Client Scope after save in step 2
 - Select Mappers tab
@@ -59,7 +59,7 @@ In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak o
 - Select the groups mapper
 - Add
 
-![client scope mapper](../images/client-scope-mapper.png)
+![client scope mapper](../assets/client-scope-mapper.png)
 
 ### Add group Client Scope to tmcsm Client
 
@@ -67,11 +67,11 @@ In a [previous post](Keycloak-Install) I detailed an quick install of Keycloak o
 - type group in search and hit enter -> should show groups as option
 - Select group and Add -> Default
 
-![client add group scope](../images/client-add-scope.png)
+![client add group scope](../assets/client-add-scope.png)
 
 2. Completed Client Scope tab should look like this:
 
-![completed client scope](../images/client-scope-complete.jpg)
+![completed client scope](../assets/client-scope-complete.jpg)
 
 ### Create Realm Roles for Tanzu Self-Managed Required Groups
 
@@ -84,7 +84,7 @@ Tanzu Self-Managed v1.0.1 requires hard-coded groups tmc:admin and tmc:memeber i
 - Role Name: tmc:member
 - Save
 
-![realm roles](../images/realm-roles.jpg)
+![realm roles](../assets/realm-roles.jpg)
 
 ### Add User 
 

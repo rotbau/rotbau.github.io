@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: archive
 title: Trusting a Private CA on TKGs clusterclass clusters
 categories: [kubernetes,tkgs,tanzu]
 ---
