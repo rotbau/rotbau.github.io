@@ -3,7 +3,7 @@
 #
 
 # Name of your site (displayed in the header)
-name: Bob Bauer
+name: vTechk8s Blog
 show_downloads: false
 # Short bio or description (displayed in the header)
 description: Blogs about Kubernetes and Technology
@@ -15,7 +15,7 @@ avatar: https://raw.githubusercontent.com/rotbau/rotbau.github.io/master/images/
 author:
   name             : "Bob Bauer"
   avatar           : "profile.png"
-  bio              : "Your biography for the left-hand sidebar"
+  bio              : "I'm a solutions engineer working for a large Silicon Valley software company.  I'm also a Kubernetes nerd and hardware junkie that still loves listening to the drone of fans and watching all the blinky lights."
 
 #
 # Flags below are optional
