@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: archive
 title: Getting Kapp to Trust Private Repository on TKGs
 categories: [kubernetes,tkgs,tanzu]
 ---
