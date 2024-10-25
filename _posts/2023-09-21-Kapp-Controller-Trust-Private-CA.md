@@ -1,7 +1,6 @@
 ---
 layout: archive
 title: Getting Kapp to Trust Private Repository on TKGs
-categories: [kubernetes,tkgs,tanzu]
 ---
 
 Kapp controller is Package management system for Kubernetes and part of the open-source Carvel Suite.  Essentially it allows you to life cycle manage applications on Kubernetes in the form of packages.  I won't get into the entire philosophy of how it works but head over to carvel.dev to learn more.  VMware has been using kapp to deploy a number of system packages for some time now.

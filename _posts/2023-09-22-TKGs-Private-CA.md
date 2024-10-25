@@ -1,7 +1,6 @@
 ---
 layout: archive
 title: Trusting a Private CA on TKGs clusterclass clusters
-categories: [kubernetes,tkgs,tanzu]
 ---
 
 Many organizations will use their private CA to sign certificates for various applications including their image registry.  And unless you tell docker or containerd or kapp to trust the certificate bad things happen.  Anyone who has ever run up against the dreaded "X. 509 Certificate Signed by Unknown Authority" when trying to do a docker pull or seeing your pod images stuck in imagePullBackOff will know exactly what I'm talking about.
