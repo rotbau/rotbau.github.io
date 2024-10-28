@@ -19,6 +19,7 @@ base64 -w 0 ca.crt | base64 -w 0
 ```
 4. Repeat for any other CAs you need to add (example below adds harbor-ca:, ca-1:, ca-2)
 5. Create Manifest for trusted-ca-secret and add the name of the certificate (harbor-ca) and the double base64 encoded ca.crt.  The name can be anything but needs to match what you put in the cluster manifest trust section.
+
 ```
 cat > <clustername>-user-trusted-ca-secret.yaml <<-EOF
 apiVersion: v1
@@ -41,6 +42,7 @@ kubectl apply -f <clustername>-user-trusted-ca-secret.yaml
 ## Update TKG Cluster Manifest variables section
 
 1. Modify the variables section to add the trust section
+
 ```
 spec:
   variables:
@@ -98,6 +100,7 @@ kubectl get clusters
 kubectl edit cluster <clustername>
 ```
 5. In the cluster object (or manifest) add the new trusted CA secret name under the spec.topology.variables.name.trust section
+
 ```
 spec:
   variables:
