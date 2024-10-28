@@ -1,9 +1,9 @@
 # main links
 main:
    - title: "Home"
-     url: /index.html/
+     url: https://blog.vtechk8s.com/index.html
    - title: "Posts"
-     url: /posts.html/
+     url: https://blog.vtechk8s.com/posts.html
   # - title: "About"
   #   url: https://mmistakes.github.io/minimal-mistakes/about/
   # - title: "Sample Posts"
