@@ -1,7 +1,9 @@
 # main links
 main:
-  - title: "Posts"
-    url: /_posts/
+   - title: "Home"
+     url: /index.html/
+   - title: "Posts"
+     url: /posts.html/
   # - title: "About"
   #   url: https://mmistakes.github.io/minimal-mistakes/about/
   # - title: "Sample Posts"
