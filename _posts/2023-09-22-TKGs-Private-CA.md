@@ -99,7 +99,6 @@ kubectl edit cluster <clustername>
 ```
 5. In the cluster object (or manifest) add the new trusted CA secret name under the spec.topology.variables.name.trust section
 ```
-...
 spec:
   variables:
     - name: trust
