@@ -34,7 +34,9 @@ data:
 type: Opaque
 EOF
 ```
+
 6. Apply trusted ca manifest in vsphere namespace context
+
 ```
 kubectl apply -f <clustername>-user-trusted-ca-secret.yaml
 ```
@@ -59,8 +61,10 @@ spec:
         - name: ca-1
         - name: ca-2
 ```
+
 2. Create the cluster
 3. Optional: Verify the cluster has the certificate
+
 ```
 vsphere namesspace context
 kubectl get cluster <clustername> -oyaml |grep -i -A 5 additionaltrustedcas
@@ -72,10 +76,13 @@ verify harbor-ca is present
 If you need to replace an existing TKG cluster with a new Trusted CA, or you need to add addtional CAs to the cluster you can follow this process.
 
 1. Double base64 encode the new or addtional CA certificate you wish to trust 
+
 ```
 base64 -w 0 ca.crt | base64 -w 0
 ```
+
 2. Edit the <clustername>-user-trusted-ca-secret yaml file you initially used to create the secret and either replace the existing CA value or add a line for the new CA as shown below
+
 ```
 apiVersion: v1
 kind: Secret
@@ -87,18 +94,23 @@ data:
   new-ca: TCARMdkeiADMMEKdkeSlCRFJWSlVTVVpKUTBGVVJTMHDNMESSEdceD............
 type: Opaque
 ```
+
 3. Apply the updated secret yaml in the vSphere namespace that houses cluster objects
+
 ```
 kubectl config use-context <vsphere namespace for cluster>
 kubectl apply -f <clustername>-user-trusted-ca-secret yaml
 secret/<clustername>-user-trusted-ca-secret configured
 ```
+
 4. Edit the TKG cluster object to add the new CA secret name
+
 ```
 kubectl config use-context <vsphere namespace for cluster>
 kubectl get clusters
 kubectl edit cluster <clustername>
 ```
+
 5. In the cluster object (or manifest) add the new trusted CA secret name under the spec.topology.variables.name.trust section
 
 ```
@@ -110,12 +122,16 @@ spec:
         - name: harbor-ca
         - name: new-ca
 ```
+
 6. Either apply the manifest if you edited that or save the edited cluster object.  If this is succesful you should see something similar to 
+
 ```
 cluster.cluster.x-k8s.io/<clustername> edited
 ```
+
 7. Once the dchanges are applied you will notice the TKG nodes in the clusters will be replaced using a rolling upgrade.  Once all the nodes in the cluster have been replaced the operation is complete
 8. You can validate the new secret is present
+
 ```
 kubectl get cluster <clustername> -oyaml |grep -i -A 5 additionaltrustedcas
 
