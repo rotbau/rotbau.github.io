@@ -113,6 +113,7 @@ spec:
 - Authenticate to workload cluster using appropriate `kubectl vsphere login` commands
 - Change to workload cluster context `kubectl config use-context mccluster`
 - Verify antrea-agent and antrea-controller pods are running
+
 ```
 kubectl get po -n kube-system |grep antrea
 antrea-agent-7xg5t                                        2/2     Running   0          46h
@@ -120,7 +121,9 @@ antrea-agent-f8m2d                                        2/2     Running   0   
 antrea-agent-xqxk5                                        2/2     Running   0          46h
 antrea-controller-689b7cdfc5-4p6r9                        1/1     Running   0          46h
 ```
+
 - Describe the antrea-configmap and verify Multicast and NetworkPolicyStats feature gates are set to true
+
 ```
 kubectl describe cm antrea-config -n kube-system
 
@@ -147,7 +150,9 @@ featureGates:
   AntreaIPAM: false
   Multicast: true
 ```
+
 - Exec into the antrea-agent and antrea-controller pods directly and use antctl to check status
+
 ```
 kubectl exec -ti antrea-agent-xqxk5 -n kube-system -- sh
 
@@ -170,6 +175,7 @@ FlowExporter             Enabled        ALPHA
 NetworkPolicyStats       Enabled        BETA
 Multicast                Enabled        ALPHA
 ```
+
  ## Create Containers to test Mutlicast
 
  I'm using simple iperf to test Mutlicast sending / receiver.  I put together a couple simple Dockefiles to acheive this
@@ -208,7 +214,9 @@ RUN apt-get install -y iperf
 ENTRYPOINT ["/usr/bin/iperf", "-s", "-u", "-B", "239.255.12.43", "-i", "1"]
 EOF
 ```
+
 - Build the docker images with approriate tags to your image registry and push them
+
 ```
 docker build . -t registry/project/mcreceiver:v1
 ```
@@ -218,6 +226,7 @@ docker build . -t registry/project/mcreceiver:v1
 ### Create Pod Manifests
 
 **Sender Pod**
+
 ```
 cat <<EOF > mcsender.yaml
 apiVersion: v1
@@ -236,6 +245,7 @@ EOF
 ```
 
 **Receiver Pod**
+
 ```
 cat <<EOF > mcreceiver.yaml
 apiVersion: v1
@@ -254,6 +264,7 @@ EOF
 ```
 
 ### Deploy Pods
+
 ```
 kubectl apply -f mcsender.yaml
 kubectl apply -f mcreceiver.yaml
@@ -265,37 +276,47 @@ The mcsender should already be sending traffic since the entrypoint of the conta
 
 **Start Sender manually**
 - Exec to mcsender pod 
+
 ```
 kubectl exec -ti mcsender -- /bin/bash
 ```
+
 - On the sender pod run
+
 ```
 iperf -c 239.255.12.43 -u -T 32 -t 86400
 ```
 
 **Start Receiver manually**
 - Exec to mcreceiver pod
+
 ```
 kubectl exec -ti mcreceiver -- /bin/bash
 ```
+
 - On receiver pod run
+
 ```
 iperf -s -u -B 239.255.12.43 -i 1
 ```
+
 - If mutlicast is working you should see something like this
 ![mcreceiver pod](../images/mcreceiver-pod.png)
 
 **Check multicastgroups from K8s cli**
+
 ```
 kubectl get multicastgroups
 GROUP           PODS
 239.255.12.43   default/mcreceiver
 ```
+
 **Check podmulticaststats on antrea-agent pods**
 
 - Exec into antrea-agent pods and view mulicast groups.  Note: you will only see information on the pods running on the same K8s node as the antrea-agent
 
 *antrea-agent podmulticaststats for mcreceiver*
+
 ```
 kubectl exec -ti antrea-agent-7xg5t -n kube-system -- sh
 
@@ -308,6 +329,7 @@ secretgen-controller secretgen-controller-75d88bc999-m7zkh 0       0
 ```
 
 *antrea-agent podmulticaststats for mcsender*
+
 ```
 kubectl exec -ti antrea-agent-xqxk5 -n kube-system -- sh
 
@@ -316,15 +338,16 @@ antctl get podmulticaststats
 NAMESPACE NAME     INBOUND OUTBOUND
 default   mcsender 0       450370
 ```
+
 **Checking mulicast from VM or K8s node**
 
 - ssh to VM or K8s node
+
 ```
 ip mroute
 
 (192.0.1.5,239.255.12.43)   Iif: antrea-gw0 Oifs: eth0  State: resolved
 ```
-
 
 ## Testing Pod-to-VM Multicast
 
@@ -333,9 +356,11 @@ I initially had problems getting Pod -> VM multicast working without using hostN
 The VM I'm testing is on the same subnet as my K8s cluster.  To route multicast across vlans you may need additional configuration on the physical network to set up PIM and other multicast forwarding configurations.  That's out of the scope of this document (mainly because my home lab gear doesn't support this).  I may test in my nested environments to see if I can get it working.
 
 To test just use any VM with iperf installed and run the same iperf command as you do on the receiver pod
+
 ```
 iperf -s -u -B 239.255.12.43 -i 1
 ```
+
 If multicast is working should see something like this
 ![mcreceiver vm](../assets/mcreceiver-vm.png)
 
