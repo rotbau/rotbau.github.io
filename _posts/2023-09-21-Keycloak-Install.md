@@ -11,13 +11,16 @@ This blog covers a quick and dirty install of Keycloak on Linux You can also ins
 
 1. I used Ubuntu 22.04 because it supports openjdk-1.19-jdk which appears to be required by the lated 22.0.1 version of Keycloak.
 2. Install openjdk and create keycloak group
+
 ```
 sudo apt install openjdk-19-jdk
 java --version
 sudo groupadd keycloak
 sudo useradd -r -g keycloak -d /opt/keycloak -s /sbin/nologin keycloak
 ```
+
 ## Download and Unpack Keycloak
+
 ```
 sudo wget https://github.com/keycloak/keycloak/releases/download/22.0.1/keycloak-22.0.1.zip -O /opt/keycloak-22.0.1.zip
 sudo unzip /opt/keycloak-22.0.1.zip -d /opt
@@ -25,23 +28,28 @@ sudo mv /opt/keycloak-22.0.1 /opt/keycloak
 sudo chmod o+x /opt/keycloak/bin
 sudo chown -R keycloak /opt/keycloak
 ```
+
 ## Install Keycloak
 
 ### Generate Certificate for Keycloak Server
 
 1. If you have an established CA you can request a certificate for Keycloak server.  Be sure to include subject alternative for at least DNS but would recommend IP as well.
 2. Alternatively if you want to just generate a quick self-signed CA Cert 
+
 ```
 # Configure keycloak
 sudo -u keycloak openssl req -newkey rsa:2048 -nodes -keyout /opt/keycloak/conf/key.pem -subj "/C=US/ST=ST/L=CityO=VMware/OU=Tanzu/CN=keycloak.example.com" -addext 'subjectAltName = DNS:keycloak.example.com, IP:10.197.107.63, IP:192.168.10.1' -x509 -days 365 -out /opt/keycloak/conf/certificate.pem
 ```
+
 ### Configure and Build Keycloak
 
 1. Edit keycloak.conf
+
 ```
 sudo -u keycloak cp /opt/keycloak/conf/keycloak.conf /opt/keycloak/conf/keycloak.conf.bak
 sudo -u keycloak vi /opt/keycloak/conf/keycloak.conf
 ```
+
 2. Modify keycloak.conf as needed.  For our use we are only editing the hostname variable to match what we used in the certificate (ex keycloak vtechk8s.com)
 
 ```
@@ -72,14 +80,18 @@ https-certificate-key-file=/opt/keycloak/conf/key.pem
 # Hostname for the Keycloak server.
 hostname=keycloak.vtechk8s.com
 ```
+
 3. Build keycloak
+
 ```
 sudo -u keycloak /opt/keycloak/bin/kc.sh build
 sudo -u keycloak /opt/keycloak/bin/kc.sh show-config
 ```
+
 ### Set up Keycloak Service
 
 1. Set up keycloak.service file
+
 ```
 cat > /tmp/keycloak.service <<-EOF
 [Unit]
@@ -99,7 +111,9 @@ StandardOutput=null
 WantedBy=multi-user.target
 EOF
 ```
+
 2. Install keycloak.service
+
 ```
 sudo mv /tmp/keycloak.service  /etc/systemd/system/keycloak.service 
 sudo chown root:root /etc/systemd/system/keycloak.service
@@ -114,6 +128,7 @@ sudo systemctl status keycloak
 Best way to set the initial admin user and password IMHO is to have a GUI available on the machine Keycloak was installed on.  Then you can just use a browser to visit http://localhost:8443 and set the credentials.
 
 You can also set environmental variables for the admin user and password and then run the /opt/keycloak/bin/kc.bat start 
+
 ```
 export KEYCLOAK_ADMIN=<username>
 export KEYCLOAK_ADMIN_PASSWORD=<password>
