@@ -16,6 +16,7 @@ One of the cool things with Tanzu 2.0 on vSphere 8 and clusterclass clusters is 
 1. Authenticate to supervisor if you haven't and change context to the vsphere namespace where you plan to create the TKG workload cluster
 
 2. Create kappcontrollerconfig manifest (example below for a cluster called tkg-cluster1 but suggestion you take a template from and existing cluster and add only the config.certs section as shown)
+
 ```
 export clustername="tkg-cluster1"
 
@@ -57,16 +58,22 @@ spec:
   namespace: tkg-system
 EOF
 ```
+
 3. Edit the kapp-controller-config.yaml and under spec.kappController.config.caCerts replace the value with the ca.crt your registry was signed with.  Note if you need to get the CA crt you can run something like the following example for harbor.  Note api may be different for other registries
+
 ```
 wget -O harbor-ca.crt https://harbor.domain.com/api/v2.0/systeminfo/getcert --no-check-certificate
 ``` 
+
 4. The name of the KappControllerConfig metadata.name MUST be in the format of {clustername}-kapp-controller-package
 5. If you want to investigate other fields you can add under the spec.kappController.config run the following command from vsphere namespace context
+
 ```
 kubectl explain kappcontrollerconfig.spec.kappController.config
 ```
+
 5. Create the KappControllerConfig in the vSphere namespace where you will create the TKGs workload cluster
+
 ```
 kubectl apply -f tkg-cluster1-kapp-controller-package.yaml
 
@@ -75,8 +82,10 @@ kubectl get kappcontrollerconfig
 NAME                                NAMESPACE    GLOBALNAMESPACE   SECRETNAME
 tkg-cluster1-kapp-controller-package   tkg-system   tkg-system
 ```
+
 6. Create your TKG Cluster.  You of course will need your TKG cluster to also trust the CA for your registry if you intend to deploy containers from it.  This is covered in the vSphere with Tanzu documentation.
 7. Once the cluster is created you can view the kapp configmap on the TKG workload cluster to verify your cacert is included
+
 ```
 kubectl get cm -n tkg-system
 
@@ -96,13 +105,16 @@ MIIFqDCCA5CgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBlMQswCQYDVQQGEwJVUzES
 MBAGA1UECAwJTWlubmVzb3RhMRQwEgYDVQQHDAtNaW5uZWFwb2xpczEVMBMGA1UE
 ..........
 ```
+
 ## Option Two - Existing Cluster edit kappcontrollerconfig
 
 1. Edit the existing kappcontrollerconfig for the cluster from the vSphere namespace context
+
 ```
 kubectl get kappcontrollerconfig
 kubectl edit kappcontrollerconfig tkg-cluster1-kapp-controller-package
 ```
+
 2. Add the config.caCerts under spec.kappController like in the eample above and add your ca.crt
 3. :wq the edit to save change.  You should see that the tkg-cluster1-kapp-controller-package was edited
 4. Change context to TKG workload cluster
@@ -116,6 +128,7 @@ I tested this option and it also worked.  It seemed to take a little time for th
 
 1. Change to TKG workload cluster context
 2. Create kapp-controller-conifig secret
+
 ```
 cat > kapp-controller-secret.yaml <<-EOF
 apiVersion: v1
@@ -148,9 +161,11 @@ stringData:
   dangerousSkipTLSVerify: ""
 EOF
 ```
+
 3. Edit kapp-controller-secret.yaml and replace the caCerts with your own ca.crt value
 4. Optionally fill in any of the other config options
 5. Save file and apply to TKG workload cluster
+
 ```
 kubectl apply -f kapp-controller-secret.yaml
 
