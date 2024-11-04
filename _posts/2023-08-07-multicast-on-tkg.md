@@ -301,7 +301,7 @@ iperf -s -u -B 239.255.12.43 -i 1
 ```
 
 - If mutlicast is working you should see something like this
-![mcreceiver pod](../images/mcreceiver-pod.png)
+![mcreceiver pod](../assets/mcreceiver-pod.png)
 
 **Check multicastgroups from K8s cli**
 
